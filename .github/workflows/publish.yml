@@ -1,0 +1,53 @@
+name: Publish Articles
+
+on:
+  push:
+    paths:
+      - "content/**/*.md"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run mode"
+        required: false
+        default: "false"
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Publish to Qiita and DEV.to
+        env:
+          QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
+          DEVTO_TOKEN: ${{ secrets.DEVTO_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          node scripts/publish.mjs
+
+      - name: Sync to Zenn
+        env:
+          ZENN_REPO_SSH: ${{ secrets.ZENN_REPO_SSH }}
+          ZENN_SSH_KEY: ${{ secrets.ZENN_SSH_KEY }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          node scripts/zenn-sync.mjs
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "記事の投稿に失敗しました。ログを確認してください。"
