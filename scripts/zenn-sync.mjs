@@ -9,9 +9,12 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// 環境変数
+// 秘密情報: Actionsのsecrets参照のみで、コード/ログに漏らさない
+// 環境変数はすべてGitHub Actionsのsecretsから取得
 const DRY_RUN = process.env.DRY_RUN === 'true'
+// TODO: ZENN_REPO_SSHをGitHub Actionsのsecretsに設定する
 const ZENN_REPO_SSH = process.env.ZENN_REPO_SSH || 'git@github.com:TODO: あなたのユーザー名/zenn-content.git'
+// TODO: ZENN_SSH_KEYをGitHub Actionsのsecretsに設定する
 const ZENN_SSH_KEY = process.env.ZENN_SSH_KEY
 
 // 設定
@@ -19,11 +22,28 @@ const CONTENT_DIR = path.join(__dirname, '..', 'content')
 const ZENN_DIR = path.join(__dirname, '..', 'zenn-temp')
 const ZENN_ARTICLES_DIR = path.join(ZENN_DIR, 'articles')
 
-// ログ関数
+// ログ: 投稿スクリプトは成功/失敗を明確にログ（記事のtitleと送信先を必ず表示）
 function log(message, type = 'info') {
   const timestamp = new Date().toISOString()
   const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'
   console.log(`${prefix} [${timestamp}] ${message}`)
+}
+
+// ログ: 記事同期の詳細ログ（タイトルと送信先を明示）
+function logSyncAttempt(post, platform, action = '同期') {
+  const status = DRY_RUN ? '[DRY RUN]' : ''
+  log(`${status} ${platform}への${action}を開始: "${post.title}"`, 'info')
+}
+
+function logSyncSuccess(post, platform, filename = null) {
+  const status = DRY_RUN ? '[DRY RUN]' : ''
+  const fileInfo = filename ? ` (ファイル: ${filename})` : ''
+  log(`${status} ${platform}への同期成功: "${post.title}"${fileInfo}`, 'success')
+}
+
+function logSyncError(post, platform, error) {
+  const status = DRY_RUN ? '[DRY RUN]' : ''
+  log(`${status} ${platform}への同期失敗: "${post.title}" - ${error}`, 'error')
 }
 
 // SSH設定
@@ -170,14 +190,22 @@ async function syncZennPosts() {
   }
 
   for (const post of zennPosts) {
+    // 再実行性: 同一記事の二重投稿を避けるため、既存記事をチェック
+    // TODO: Zennリポジトリで既存記事の検索機能を実装
+    logSyncAttempt(post, 'Zenn')
+
     const zennPost = generateZennPost(post)
     const filePath = path.join(ZENN_ARTICLES_DIR, zennPost.filename)
     
     if (DRY_RUN) {
-      log(`[DRY RUN] Zenn記事を生成: ${zennPost.filename}`, 'info')
+      logSyncSuccess(post, 'Zenn', zennPost.filename)
     } else {
-      fs.writeFileSync(filePath, zennPost.content)
-      log(`Zenn記事を生成しました: ${zennPost.filename}`, 'success')
+      try {
+        fs.writeFileSync(filePath, zennPost.content)
+        logSyncSuccess(post, 'Zenn', zennPost.filename)
+      } catch (error) {
+        logSyncError(post, 'Zenn', error.message)
+      }
     }
   }
 }

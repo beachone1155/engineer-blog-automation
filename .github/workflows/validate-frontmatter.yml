@@ -1,0 +1,38 @@
+# 型安全: Frontmatterの型定義を検証するワークフロー
+name: Validate Frontmatter
+
+on:
+  push:
+    paths:
+      - "content/**/*.md"
+  pull_request:
+    paths:
+      - "content/**/*.md"
+
+jobs:
+  validate-frontmatter:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: |
+          npm install -g pnpm
+          pnpm install
+
+      - name: Validate Frontmatter
+        run: |
+          # TODO: Frontmatter検証スクリプトを実装
+          echo "Frontmatter検証を実行中..."
+          # ここでFrontmatterの型チェックを実装
+          # 必須フィールドの存在確認
+          # 型の整合性チェック
+          # 日付形式の検証

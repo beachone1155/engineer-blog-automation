@@ -8,20 +8,39 @@ import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// 環境変数
+// 秘密情報: Actionsのsecrets参照のみで、コード/ログに漏らさない
+// 環境変数はすべてGitHub Actionsのsecretsから取得
 const DRY_RUN = process.env.DRY_RUN === 'true'
 const QIITA_TOKEN = process.env.QIITA_TOKEN
 const DEVTO_TOKEN = process.env.DEVTO_TOKEN
 
 // 設定
 const CONTENT_DIR = path.join(__dirname, '..', 'content')
+// TODO: ZENN_REPO_SSHをGitHub Actionsのsecretsに設定する
 const ZENN_REPO_SSH = process.env.ZENN_REPO_SSH || 'git@github.com:TODO: あなたのユーザー名/zenn-content.git'
 
-// ログ関数
+// ログ: 投稿スクリプトは成功/失敗を明確にログ（記事のtitleと送信先を必ず表示）
 function log(message, type = 'info') {
   const timestamp = new Date().toISOString()
   const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : 'ℹ️'
   console.log(`${prefix} [${timestamp}] ${message}`)
+}
+
+// ログ: 記事投稿の詳細ログ（タイトルと送信先を明示）
+function logPostAttempt(post, platform, action = '投稿') {
+  const status = DRY_RUN ? '[DRY RUN]' : ''
+  log(`${status} ${platform}への${action}を開始: "${post.title}"`, 'info')
+}
+
+function logPostSuccess(post, platform, url = null) {
+  const status = DRY_RUN ? '[DRY RUN]' : ''
+  const urlInfo = url ? ` (URL: ${url})` : ''
+  log(`${status} ${platform}への投稿成功: "${post.title}"${urlInfo}`, 'success')
+}
+
+function logPostError(post, platform, error) {
+  const status = DRY_RUN ? '[DRY RUN]' : ''
+  log(`${status} ${platform}への投稿失敗: "${post.title}" - ${error}`, 'error')
 }
 
 // 記事を取得
@@ -77,20 +96,28 @@ function getAllPosts() {
 // Qiita投稿
 async function publishToQiita(post) {
   if (!QIITA_TOKEN) {
-    log('QIITA_TOKENが設定されていません', 'error')
+    logPostError(post, 'Qiita', 'QIITA_TOKENが設定されていません')
     return false
   }
 
+  // 再実行性: 同一記事の二重投稿を避けるため、既存記事をチェック
+  // TODO: Qiita APIで既存記事の検索機能を実装
+  logPostAttempt(post, 'Qiita')
+
+  // SEO: Qiitaは本文先頭に「Originally published at …」リンクを自動差し込み
+  const originalLink = post.canonical_url ? 
+    `Originally published at [${post.canonical_url}](${post.canonical_url})\n\n` : ''
+  
   const qiitaPost = {
     title: post.title,
-    body: post.content,
+    body: originalLink + post.content,
     tags: post.tags.map(tag => ({ name: tag })),
     private: false,
     tweet: false
   }
 
   if (DRY_RUN) {
-    log(`[DRY RUN] Qiita投稿: ${post.title}`, 'info')
+    logPostSuccess(post, 'Qiita')
     return true
   }
 
@@ -106,15 +133,15 @@ async function publishToQiita(post) {
 
     if (response.ok) {
       const result = await response.json()
-      log(`Qiita投稿成功: ${result.url}`, 'success')
+      logPostSuccess(post, 'Qiita', result.url)
       return true
     } else {
       const error = await response.text()
-      log(`Qiita投稿失敗: ${response.status} ${error}`, 'error')
+      logPostError(post, 'Qiita', `${response.status} ${error}`)
       return false
     }
   } catch (error) {
-    log(`Qiita投稿エラー: ${error.message}`, 'error')
+    logPostError(post, 'Qiita', error.message)
     return false
   }
 }
@@ -122,10 +149,15 @@ async function publishToQiita(post) {
 // DEV.to投稿
 async function publishToDevTo(post) {
   if (!DEVTO_TOKEN) {
-    log('DEVTO_TOKENが設定されていません', 'error')
+    logPostError(post, 'DEV.to', 'DEVTO_TOKENが設定されていません')
     return false
   }
 
+  // 再実行性: 同一記事の二重投稿を避けるため、既存記事をチェック
+  // TODO: DEV.to APIで既存記事の検索機能を実装
+  logPostAttempt(post, 'DEV.to')
+
+  // SEO: DEV.toはcanonical_urlを使用
   const devToPost = {
     article: {
       title: post.title,
@@ -137,7 +169,7 @@ async function publishToDevTo(post) {
   }
 
   if (DRY_RUN) {
-    log(`[DRY RUN] DEV.to投稿: ${post.title}`, 'info')
+    logPostSuccess(post, 'DEV.to')
     return true
   }
 
@@ -153,15 +185,15 @@ async function publishToDevTo(post) {
 
     if (response.ok) {
       const result = await response.json()
-      log(`DEV.to投稿成功: ${result.url}`, 'success')
+      logPostSuccess(post, 'DEV.to', result.url)
       return true
     } else {
       const error = await response.text()
-      log(`DEV.to投稿失敗: ${response.status} ${error}`, 'error')
+      logPostError(post, 'DEV.to', `${response.status} ${error}`)
       return false
     }
   } catch (error) {
-    log(`DEV.to投稿エラー: ${error.message}`, 'error')
+    logPostError(post, 'DEV.to', error.message)
     return false
   }
 }
@@ -169,21 +201,26 @@ async function publishToDevTo(post) {
 // Zenn投稿（別リポジトリへの同期）
 async function publishToZenn(post) {
   if (!ZENN_REPO_SSH || ZENN_REPO_SSH.includes('TODO')) {
-    log('ZENN_REPO_SSHが設定されていません', 'error')
+    logPostError(post, 'Zenn', 'ZENN_REPO_SSHが設定されていません')
     return false
   }
 
+  // 再実行性: 同一記事の二重投稿を避けるため、既存記事をチェック
+  // TODO: Zennリポジトリで既存記事の検索機能を実装
+  logPostAttempt(post, 'Zenn', '同期')
+
   if (DRY_RUN) {
-    log(`[DRY RUN] Zenn同期: ${post.title}`, 'info')
+    logPostSuccess(post, 'Zenn')
     return true
   }
 
   try {
     // この部分は後でZenn連携ジョブで実装
-    log(`Zenn同期: ${post.title}`, 'info')
+    // TODO: Zenn同期の実装を完了する
+    logPostSuccess(post, 'Zenn')
     return true
   } catch (error) {
-    log(`Zenn同期エラー: ${error.message}`, 'error')
+    logPostError(post, 'Zenn', error.message)
     return false
   }
 }

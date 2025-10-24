@@ -8,6 +8,8 @@ lang: "ja"
 canonical_url: "https://TODO: あなたのドメイン.com/blog/nextjs-blog-creation"
 publish_on: ["qiita", "zenn", "devto"]
 draft: false
+created_at: "2025-01-01"
+updated_at: "2025-01-01"
 ---
 
 # Next.jsで自前ブログを作成する方法

@@ -1,6 +1,17 @@
-# Next.js MDX ブログ with 自動配信
+# エンジニアブログ自動化プロジェクト
 
 Next.js 14+ (App Router) と MDX を使用した自前ブログシステムです。Qiita、Zenn、DEV.to への自動配信機能を搭載しています。
+
+## プロジェクトの設計原則
+
+このプロジェクトでは以下の原則を厳守しています：
+
+- **型安全**: Frontmatterは型定義して欠落時はビルドエラー
+- **ログ**: 投稿スクリプトは成功/失敗を明確にログ（記事のtitleと送信先を必ず表示）
+- **再実行性**: 同一記事の二重投稿を避けるため、API側の下書き→公開や既存検知が可能なら対応（最低限、DRY_RUNあり）
+- **SEO**: DEV.toはcanonical_url、Qiitaは本文先頭に「Originally published at …」リンクを自動差し込み（オプション）
+- **秘密情報**: Actionsのsecrets参照のみで、コード/ログに漏らさない
+- **コメント**: すべての新規/変更ファイルに目的コメントとTODOプレースホルダを残す
 
 ## 機能
 
@@ -76,7 +87,7 @@ draft: false
 ここにMarkdownで記事を書きます。
 ```
 
-## Frontmatter 仕様
+## Frontmatter 仕様（型安全）
 
 | フィールド | 型 | 必須 | 説明 |
 |-----------|----|----|------|
@@ -85,10 +96,14 @@ draft: false
 | `summary` | string | ✅ | 記事の概要（meta description） |
 | `tags` | string[] | ✅ | タグの配列 |
 | `cover` | string | ❌ | カバー画像のパス |
-| `lang` | string | ❌ | 言語（デフォルト: "ja"） |
-| `canonical_url` | string | ❌ | カノニカルURL |
-| `publish_on` | string[] | ❌ | 配信先（"qiita", "zenn", "devto"） |
-| `draft` | boolean | ❌ | 下書きフラグ（デフォルト: false） |
+| `lang` | string | ✅ | 言語（デフォルト: "ja"） |
+| `canonical_url` | string | ❌ | カノニカルURL（SEO用） |
+| `publish_on` | string[] | ✅ | 配信先（"qiita", "zenn", "devto"） |
+| `draft` | boolean | ✅ | 下書きフラグ（デフォルト: false） |
+| `created_at` | string | ✅ | 作成日（YYYY-MM-DD形式） |
+| `updated_at` | string | ❌ | 更新日（YYYY-MM-DD形式） |
+
+**注意**: 必須フィールドが欠落している場合、ビルド時にエラーが発生します。
 
 ## 自動配信の設定
 

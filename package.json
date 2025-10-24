@@ -1,14 +1,18 @@
 {
-  "name": "zenn-blog",
+  "name": "engineer-blog-automation",
   "version": "0.1.0",
   "private": true,
+  "description": "エンジニアブログ自動化プロジェクト - Qiita、DEV.to、Zennへの自動投稿",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "publish": "node scripts/publish.mjs",
-    "publish:dry-run": "DRY_RUN=true node scripts/publish.mjs"
+    "publish:dry-run": "DRY_RUN=true node scripts/publish.mjs",
+    "zenn-sync": "node scripts/zenn-sync.mjs",
+    "zenn-sync:dry-run": "DRY_RUN=true node scripts/zenn-sync.mjs",
+    "validate-frontmatter": "node scripts/validate-frontmatter.mjs"
   },
   "dependencies": {
     "next": "^14.0.0",

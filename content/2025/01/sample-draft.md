@@ -8,6 +8,7 @@ lang: "ja"
 canonical_url: "https://TODO: あなたのドメイン.com/blog/sample-draft"
 publish_on: []
 draft: true
+created_at: "2025-01-01"
 ---
 
 # 下書き記事の例
