@@ -16,7 +16,7 @@ export default function MDXContent({ content }: MDXContentProps) {
             remarkPlugins: [remarkGfm],
             rehypePlugins: [
               [
-                rehypePrettyCode,
+                rehypePrettyCode as any,
                 {
                   theme: 'github-dark',
                   keepBackground: false,
