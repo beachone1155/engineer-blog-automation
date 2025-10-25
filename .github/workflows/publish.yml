@@ -37,6 +37,7 @@ jobs:
         env:
           QIITA_TOKEN: ${{ secrets.QIITA_TOKEN }}
           DEVTO_TOKEN: ${{ secrets.DEVTO_TOKEN }}
+          ZENN_REPO_SSH: ${{ secrets.ZENN_REPO_SSH }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
         run: |
           node scripts/publish.mjs
