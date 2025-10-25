@@ -18,6 +18,12 @@ const DRY_RUN = process.env.DRY_RUN === 'true'
 const QIITA_TOKEN = process.env.QIITA_TOKEN
 const DEVTO_TOKEN = process.env.DEVTO_TOKEN
 
+// デバッグ用ログ
+console.log('Environment variables check:')
+console.log('QIITA_TOKEN:', QIITA_TOKEN ? 'SET' : 'NOT SET')
+console.log('DEVTO_TOKEN:', DEVTO_TOKEN ? 'SET' : 'NOT SET')
+console.log('ZENN_REPO_SSH:', process.env.ZENN_REPO_SSH ? 'SET' : 'NOT SET')
+
 // 設定
 const CONTENT_DIR = path.join(__dirname, '..', 'content')
 // TODO: ZENN_REPO_SSHをGitHub Actionsのsecretsに設定する
