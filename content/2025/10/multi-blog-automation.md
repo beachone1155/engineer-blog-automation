@@ -82,6 +82,8 @@ lang: "ja"
 canonical_url: "https://beachone1155.github.io/engineer-blog-automation/blog/multi-blog-automation"
 publish_on: ["qiita","zenn","devto"]
 draft: false
+created_at: "2025-10-25"
+updated_at: "2025-10-25"
 ---
 ````
 
