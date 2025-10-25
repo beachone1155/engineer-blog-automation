@@ -1,20 +1,76 @@
 import Link from 'next/link'
+import Container from '@/components/Container'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function Home() {
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">TODO: ブログタイトル</h1>
-        <p className="text-lg mb-8">TODO: ブログの説明</p>
-        <div className="space-y-4">
-          <Link 
-            href="/blog" 
-            className="inline-block bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-          >
+    <Container className="py-8">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4 text-foreground">Engineer Blog</h1>
+        <p className="text-xl text-muted-foreground mb-8">
+          エンジニアの技術ブログ - 自動化、開発、学習記録
+        </p>
+        <Button asChild size="lg" className="bg-blue text-white hover:bg-blue/90">
+          <Link href="/blog">
             ブログ一覧を見る
           </Link>
-        </div>
+        </Button>
       </div>
-    </main>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>技術記事</CardTitle>
+            <CardDescription>
+              最新の技術動向や開発ノウハウを発信
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" asChild className="w-full border-blue text-blue hover:bg-blue hover:text-white">
+              <Link href="/blog">
+                記事を読む
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>タグ検索</CardTitle>
+            <CardDescription>
+              カテゴリ別に記事を探す
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" asChild className="w-full border-blue text-blue hover:bg-blue hover:text-white">
+              <Link href="/tags">
+                タグを見る
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>GitHub</CardTitle>
+            <CardDescription>
+              ソースコードとプロジェクト情報
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" asChild className="w-full border-blue text-blue hover:bg-blue hover:text-white">
+              <a 
+                href="https://github.com/beachone1155/engineer-blog-automation"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHubを見る
+              </a>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </Container>
   )
 }

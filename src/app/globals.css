@@ -2,28 +2,80 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@layer base {
+  :root {
+    /* light */
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+
+    --primary: 217.2 91.2% 59.8%;      /* #3b82f6 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 217.2 91.2% 59.8%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217.2 91.2% 59.8%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* dark */
+    --background: 222.2 47.4% 11.2%;   /* slate-900 付近 */
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 91.2% 59.8%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer base {
+  body {
+    @apply text-foreground;
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  @apply antialiased;
 }
 
 /* MDX styles */
@@ -31,20 +83,53 @@ body {
   max-width: none;
 }
 
+/* Article content wrapper */
+.article-content {
+  @apply prose prose-slate dark:prose-invert max-w-3xl mx-auto px-4 sm:px-6;
+}
+
+/* Code blocks with rehype-pretty-code */
 .prose pre {
   position: relative;
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  padding: 1rem !important;
+  border-radius: 0.75rem !important;
+  overflow-x: auto !important;
+  margin: 1.5rem 0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .prose pre code {
-  background: none;
-  padding: 0;
+  background: none !important;
+  padding: 0 !important;
+  color: inherit !important;
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
 }
 
-.copy-button {
+/* Language label */
+.prose pre[data-language]::before {
+  content: attr(data-language);
   position: absolute;
   top: 0.5rem;
   right: 0.5rem;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Copy button */
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 3rem;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
@@ -52,6 +137,7 @@ body {
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.2s;
+  color: #94a3b8;
 }
 
 .prose pre:hover .copy-button {
@@ -59,5 +145,21 @@ body {
 }
 
 .copy-button:hover {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.2);
+  color: #e2e8f0;
+}
+
+/* Inline code */
+.prose code:not(pre code) {
+  background: #f1f5f9 !important;
+  color: #3b82f6 !important;  /* 青色に変更 */
+  padding: 0.125rem 0.25rem !important;
+  border-radius: 0.25rem !important;
+  font-size: 0.875em !important;
+  font-weight: 500 !important;
+}
+
+.prose code:not(pre code)::before,
+.prose code:not(pre code)::after {
+  content: '' !important;
 }
