@@ -5,6 +5,10 @@ import path from 'path'
 import matter from 'gray-matter'
 import { execSync } from 'child_process'
 import { fileURLToPath } from 'url'
+import dotenv from 'dotenv'
+
+// 環境変数を読み込み
+dotenv.config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '..', '.env.local') })
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

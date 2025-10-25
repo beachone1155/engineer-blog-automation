@@ -7,7 +7,7 @@ cover: "/images/nextjs-blog-cover.jpg"
 lang: "ja"
 canonical_url: "https://TODO: あなたのドメイン.com/blog/nextjs-blog-creation"
 publish_on: ["qiita", "zenn", "devto"]
-draft: false
+draft: true
 created_at: "2025-01-01"
 updated_at: "2025-01-01"
 ---
