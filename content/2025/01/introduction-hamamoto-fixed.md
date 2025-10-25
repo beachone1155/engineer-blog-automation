@@ -5,7 +5,7 @@ summary: "長野県出身のフリーランスエンジニアとして、Python�
 tags: ["自己紹介", "フリーランス", "Python", "AWS"]
 cover: "/images/hamamoto-intro-cover.jpg"
 lang: "ja"
-canonical_url: "https://beachone1155.github.io/engineer-blog-automation/blog/introduction-hamamoto"
+canonical_url: "https://hamamoto-blog.com/blog/introduction-hamamoto"
 publish_on: ["qiita", "zenn", "devto"]
 draft: false
 created_at: "2025-01-25"

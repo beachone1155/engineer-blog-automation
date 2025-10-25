@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "export": "next build && next export",
     "publish": "node scripts/publish.mjs",
     "publish:dry-run": "DRY_RUN=true node scripts/publish.mjs",
     "zenn-sync": "node scripts/zenn-sync.mjs",

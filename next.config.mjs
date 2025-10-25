@@ -8,6 +8,11 @@ const nextConfig = {
   experimental: {
     mdxRs: false,
   },
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true,
+  },
 }
 
 const mdxConfig = {
