@@ -2,7 +2,7 @@
 title: "AIとGitHub Actionsで“マルチ投稿ブログ”を自動化してみた（第1回）"
 slug: "multi-blog-automation"
 summary: "1つのMarkdownからQiita・Zenn・DEV.to・GitHub Pages・Vercelへ自動投稿できる仕組みを構築しました。Next.js + MDX + GitHub Actionsで実現しています。"
-tags: ["Next.js", "GitHubActions", "Qiita", "Zenn", "DEV.to", "Vercel"]
+tags: ["Next.js", "GitHubActions", "Qiita", "Zenn"]
 cover: "/images/cover.png"
 lang: "ja"
 canonical_url: "https://beachone1155.github.io/engineer-blog-automation/blog/multi-blog-automation"
