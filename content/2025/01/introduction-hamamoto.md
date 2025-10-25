@@ -2,10 +2,10 @@
 title: "はじめまして、濱元です。フリーランスエンジニアとしての挑戦"
 slug: "introduction-hamamoto"
 summary: "長野県出身のフリーランスエンジニアとして、Python・AWS・生成AIを中心にデータレイク構築や新規開発に取り組んでいます。得意領域や今後の展望について紹介します。"
-tags: ["自己紹介", "フリーランス", "Python", "AWS", "生成AI", "データエンジニアリング"]
+tags: ["自己紹介", "フリーランス", "Python", "AWS"]
 cover: "/images/hamamoto-intro-cover.jpg"
 lang: "ja"
-canonical_url: "https://TODO: あなたのドメイン.com/blog/introduction-hamamoto"
+canonical_url: "https://hamamoto-blog.com/blog/introduction-hamamoto"
 publish_on: ["qiita", "zenn", "devto"]
 draft: false
 created_at: "2025-01-25"
