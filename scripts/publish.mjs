@@ -168,6 +168,13 @@ async function publishToDevTo(post) {
   logPostAttempt(post, 'DEV.to')
 
   // SEO: DEV.toはcanonical_urlを使用
+  console.log('DEV.to投稿データ:', {
+    title: post.title,
+    tags: post.tags,
+    tagsLength: post.tags.length,
+    canonical_url: post.canonical_url
+  })
+  
   const devToPost = {
     article: {
       title: post.title,
