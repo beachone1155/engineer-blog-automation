@@ -201,6 +201,22 @@ node scripts/zenn-sync.mjs
 
 `src/types/post.ts` で型定義を追加し、`scripts/publish.mjs` で投稿ロジックを実装してください。
 
+## AI記事作成プロンプト
+
+記事作成時にAIを使用する場合は、以下のプロンプトを使用してください：
+
+### 詳細版
+`docs/ai-article-prompt.md` のプロンプトを使用
+
+### 簡潔版
+`docs/ai-article-prompt-short.md` のプロンプトを使用
+
+### 主な制約事項
+- **タグは最大4個まで**（DEV.toの制限）
+- **タグは英数字のみ**（例: "nextjs", "githubactions"）
+- **Frontmatterは1つだけ**（重複禁止）
+- **created_atとupdated_atは必須**
+
 ## トラブルシューティング
 
 ### 投稿に失敗した場合
@@ -222,6 +238,8 @@ node scripts/zenn-sync.mjs
 - **Qiita投稿エラー**: トークンの権限を確認
 - **DEV.to投稿エラー**: APIキーが正しく設定されているか確認
 - **Zenn同期エラー**: SSH鍵の設定を確認
+- **タグエラー**: タグが4個を超えている、または特殊文字が含まれている
+- **Frontmatterエラー**: 重複定義や必須フィールドの不足
 
 ## ライセンス
 
