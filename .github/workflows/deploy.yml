@@ -35,6 +35,8 @@ jobs:
         run: pnpm install
 
       - name: Build
+        env:
+          DEPLOY_TARGET: github-pages
         run: pnpm build
 
       - name: Setup Pages

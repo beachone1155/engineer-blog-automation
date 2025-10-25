@@ -1,6 +1,4 @@
 import createMDX from '@next/mdx'
-import remarkGfm from 'remark-gfm'
-import rehypePrettyCode from 'rehype-pretty-code'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -8,24 +6,26 @@ const nextConfig = {
   experimental: {
     mdxRs: false,
   },
-  output: 'export',
-  trailingSlash: true,
-  images: {
-    unoptimized: true,
-  },
+  // GitHub Pages用の設定（環境変数で制御）
+  ...(process.env.DEPLOY_TARGET === 'github-pages' && {
+    output: 'export',
+    trailingSlash: true,
+    images: {
+      unoptimized: true,
+    },
+  }),
+  // Vercel用の設定（デフォルト）
+  ...(process.env.DEPLOY_TARGET !== 'github-pages' && {
+    images: {
+      domains: ['images.unsplash.com'],
+    },
+  }),
 }
 
+// シンプルなMDX設定（両プラットフォーム対応）
 const mdxConfig = {
-  remarkPlugins: [remarkGfm],
-  rehypePlugins: [
-    [
-      rehypePrettyCode,
-      {
-        theme: 'github-dark',
-        keepBackground: false,
-      },
-    ],
-  ],
+  remarkPlugins: [],
+  rehypePlugins: [],
 }
 
 export default createMDX(mdxConfig)(nextConfig)

@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:github-pages": "DEPLOY_TARGET=github-pages next build",
+    "build:vercel": "DEPLOY_TARGET=vercel next build",
     "start": "next start",
     "lint": "next lint",
     "export": "next build && next export",
